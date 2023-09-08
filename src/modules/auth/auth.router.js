@@ -1,0 +1,27 @@
+import { Router } from "express";
+import { isValid } from "../../middlewares/validation.middleware.js";
+import { activateSchema, changePasswordSchema, forgetCodeSchema, loginSchema, registerSchema, resetPasswordSchema } from "./auth.validation.js";
+import { activateAccount, changePassword, login, register, resetPassword, sendForgetCode } from "./auth.controller.js";
+import { isAuthenticated } from "../../middlewares/authintication.middleware.js";
+const router = Router()
+
+// register
+router.post("/register", isValid(registerSchema), register )
+
+// activate account
+router.get("/confirmEmail/:activationCode", isValid(activateSchema), activateAccount)
+
+// login
+router.post("/login", isValid(loginSchema), login)
+
+// change password
+router.patch("/changePassword", isValid(changePasswordSchema), isAuthenticated, changePassword)
+
+// send forget password code
+router.patch("/forgetCode", isValid(forgetCodeSchema), sendForgetCode)
+
+// reset password
+router.patch("/resetPassword", isValid(resetPasswordSchema), resetPassword)
+
+
+export default router;
