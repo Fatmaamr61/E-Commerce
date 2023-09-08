@@ -3,11 +3,7 @@ import { isAuthenticated } from "./../../middlewares/authintication.middleware.j
 import { isAuthorized } from "./../../middlewares/authorization.middleware.js";
 import { fileUpload, filterObject } from "../../utils/multer.js";
 import { isValid } from "../../middlewares/validation.middleware.js";
-import {
-  createProductSchema,
-  ProductIdSchema,
-  updateProductSchema,
-} from "./product.validation.js";
+import { createProductSchema, ProductIdSchema } from "./product.validation.js";
 import {
   addDiscount,
   createProduct,
@@ -15,7 +11,6 @@ import {
   getAllProducts,
   getSingleProduct,
   removeDiscount,
-  updateProduct,
 } from "./product.controller.js";
 const router = Router({ mergeParams: true });
 
@@ -33,7 +28,7 @@ router.post(
   createProduct
 );
 
-// add discount 
+// add discount
 router.patch(
   "/discount/:productId",
   isAuthenticated,
@@ -66,18 +61,5 @@ router.get("/:productId", isValid(ProductIdSchema), getSingleProduct);
 
 // get products of category
 router.get("/category/:categoryId/products", getAllProducts);
-
-// update product
-router.patch(
-  "/:productId",
-  isAuthenticated,
-  isAuthorized("admin"),
-  fileUpload(filterObject.image).fields([
-    { name: "defaultImage", maxCount: 1 },
-    { name: "subImages", maxCount: 3 },
-  ]),
-  isValid(updateProductSchema),
-  updateProduct
-);
 
 export default router;

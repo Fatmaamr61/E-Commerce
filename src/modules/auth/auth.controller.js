@@ -7,7 +7,7 @@ import { passwordResetTemplate, signUpTemp } from "../../utils/generateHTML.js";
 import jwt from "jsonwebtoken";
 import { tokenModel } from "../../../db/models/token.model.js";
 import randomstring from "randomstring";
-import {cartModel} from "../../../db/models/cart.model.js"
+import { cartModel } from "../../../db/models/cart.model.js";
 
 export const register = catchError(async (req, res, next) => {
   // data from request
@@ -23,7 +23,7 @@ export const register = catchError(async (req, res, next) => {
 
   // generate activation code
   const activationCode = crypto.randomBytes(64).toString("hex");
- 
+
   // create user
   const user = await userModel.create({
     userName,
@@ -63,7 +63,7 @@ export const activateAccount = catchError(async (req, res, next) => {
   if (!user) return next(new Error("user not found!!", { cause: 404 }));
 
   // create a cart
-  await cartModel.create({user: user._id})
+  await cartModel.create({ user: user._id });
 
   // send response
   return res.send(
@@ -195,4 +195,34 @@ export const resetPassword = catchError(async (req, res, next) => {
     success: true,
     message: "password reset successfully, try to login !",
   });
+});
+
+export const logOut = catchError(async (req, res, next) => {
+  const id = req.user._id;
+  let { token } = req.headers;
+
+  token = token.split(process.env.BEARER)[1];
+  const removeToken = await tokenModel.findOneAndUpdate(
+    { token },
+    { isValid: false },
+    { new: true }
+  );
+
+  return res.status(202).json({ success: true, message: `You are logged Out` });
+});
+
+export const deleteAccount = catchError(async (req, res, next) => {
+  const id = req.user._id;
+  let { token } = req.headers;
+
+  // delete user
+  const user = await userModel.findByIdAndDelete(id);
+
+  // delete token
+  token = token.split(process.env.BEARER)[1];
+  const removeToken = await tokenModel.findOneAndDelete({ token });
+
+  return res
+    .status(202)
+    .json({ success: true, message: `user deleted successfully..` });
 });

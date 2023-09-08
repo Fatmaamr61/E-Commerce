@@ -15,7 +15,7 @@ export const isAuthenticated = catchError(async (req, res, next) => {
     token = token.split(process.env.BEARER)[1]
 
     // check token exsistance 
-    const checkToken = await tokenModel.find({token, isValid: true})
+    const checkToken = await tokenModel.findOne({token, isValid: true})
     if (!checkToken) return next(new Error("Token expired", {cause:403}))
 
     // decode

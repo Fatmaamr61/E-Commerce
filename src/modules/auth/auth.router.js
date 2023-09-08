@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { isValid } from "../../middlewares/validation.middleware.js";
 import { activateSchema, changePasswordSchema, forgetCodeSchema, loginSchema, registerSchema, resetPasswordSchema } from "./auth.validation.js";
-import { activateAccount, changePassword, login, register, resetPassword, sendForgetCode } from "./auth.controller.js";
+import { activateAccount, changePassword, deleteAccount, logOut, login, register, resetPassword, sendForgetCode } from "./auth.controller.js";
 import { isAuthenticated } from "../../middlewares/authintication.middleware.js";
 const router = Router()
 
@@ -23,5 +23,10 @@ router.patch("/forgetCode", isValid(forgetCodeSchema), sendForgetCode)
 // reset password
 router.patch("/resetPassword", isValid(resetPasswordSchema), resetPassword)
 
+// logOut
+router.get("/logout", isAuthenticated, logOut);
+
+// delete account
+router.delete("/delete/account", isAuthenticated, deleteAccount);
 
 export default router;

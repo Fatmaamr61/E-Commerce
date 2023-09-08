@@ -26,6 +26,7 @@ export const ProductIdSchema = joi
 // update product schema
 export const updateProductSchema = joi
   .object({
+    productId: joi.string().custom(isValidObjectId).required(),
     name: joi.string().min(4).max(20),
     price: joi.number().min(1),
     description: joi.string(),

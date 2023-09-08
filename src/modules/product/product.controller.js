@@ -156,19 +156,3 @@ export const getSingleProduct = catchError(async (req, res, next) => {
   return res.json({ success: true, results: product });
 });
 
-export const updateProduct = catchError(async (req, res, next) => {
-  const product = await productModel.findById(req.params.productId);
-  if (!product) return next(new Error("product not found!", { cause: 404 }));
-  // check owner
-  if (req.user._id.toString() !== product.createdBy.toString())
-    return next(new Error("Not authorized!", { cause: 401 }));
-
-  // update product
-  const updatedProduct = await productModel.findByIdAndUpdate(
-    { productId: req.params.productId },
-    req.body,
-    { new: true }
-  );
-
-  return res.json({ success: true, results: updatedProduct });
-});
