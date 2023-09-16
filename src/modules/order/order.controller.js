@@ -196,7 +196,7 @@ export const cancelOrder = catchError(async (req, res, next) => {
   return res.json({ success: true, message: "order cancelled successfully!" });
 });
 
-export const orderWebhook = async (request, response) => {
+export const orderWebhook = catchError(async (request, response) => {
   const stripe = new Stripe(process.env.STRIPE_KEY);
   const sig = request.headers["stripe-signature"];
 
@@ -208,6 +208,7 @@ export const orderWebhook = async (request, response) => {
       sig,
       process.env.ENDPOINT_SECRECT
     );
+    console.log("events: ", event);
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
     return;
@@ -222,12 +223,12 @@ export const orderWebhook = async (request, response) => {
       { _id: orderId },
       { status: "visa paid" }
     );
+    return;
   }
   // change order status
   await orderModel.findByIdAndUpdate(
     { _id: orderId },
     { status: "failed payment" }
   );
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-};
+  return;
+});
