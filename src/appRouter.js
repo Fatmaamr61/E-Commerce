@@ -7,7 +7,7 @@ import couponRouter from "./modules/coupon/coupon.router.js";
 import cartRouter from "./modules/cart/cart.router.js";
 import orderRouter from "./modules/order/order.router.js";
 import morgan from "morgan";
-import cors from "cors"
+import cors from "cors";
 
 export const appRouter = (app, express) => {
   // morgan
@@ -35,11 +35,17 @@ export const appRouter = (app, express) => {
     res.setHeader("Access-Control-Allow-Private-Network", true);
     return next();
   }); */
-  
-  app.use(cors())
-   
+
+  app.use(cors());
+
   // global middleware
-  app.use(express.json());
+  app.use((req, res, next) => {
+    // req.originalUrl
+    if (req.originalUrl === "/order/webhook") {
+      return next();
+    }
+    express.json()(req, res, next);
+  });
 
   //routes
   //auth

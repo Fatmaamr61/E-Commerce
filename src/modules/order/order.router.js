@@ -3,6 +3,7 @@ import { isAuthenticated } from "./../../middlewares/authintication.middleware.j
 import { isValid } from "./../../middlewares/validation.middleware.js";
 import { cancelOrderSchema, createOrderSchema } from "./order.validation.js";
 import { cancelOrder, createOrder, orderWebhook } from "./order.controller.js";
+import express from "express";
 
 const router = Router();
 
@@ -18,6 +19,9 @@ router.patch(
 );
 
 // webhook
-router.post('/webhook', express.raw({type: 'application/json'}, orderWebhook));
+router.post(
+  "/webhook",
+  express.raw({ type: "application/json" }, orderWebhook)
+);
 
 export default router;
