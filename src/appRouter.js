@@ -35,6 +35,7 @@ export const appRouter = (app, express) => {
     res.setHeader("Access-Control-Allow-Private-Network", true);
     return next();
   }); */
+  
   app.use(cors())
    
   // global middleware

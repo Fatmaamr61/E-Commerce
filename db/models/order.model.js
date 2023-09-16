@@ -31,10 +31,18 @@ const orderSchema = new Schema(
       name: String,
       discount: { type: Number, min: 1, max: 100 },
     },
-    finalPrice: {type: Number},
+    finalPrice: { type: Number },
     status: {
       type: String,
-      enum: ["placed", "shipped", "delivered", "canceled", "refunded"],
+      enum: [
+        "placed",
+        "shipped",
+        "delivered",
+        "canceled",
+        "refunded",
+        "visa paid",
+        "failed payment",
+      ],
       default: "placed",
     },
     payment: {
@@ -42,7 +50,6 @@ const orderSchema = new Schema(
       enum: ["visa", "cash"],
       default: "cash",
     },
-
   },
   { timestamps: true }
 );
